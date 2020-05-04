@@ -1,4 +1,4 @@
-package simple
+package regular
 
 type User struct {
 	Id    int    `json:"id"`
