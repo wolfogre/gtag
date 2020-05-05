@@ -42,11 +42,8 @@ func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResul
 
 	var files []string
 	for _, pkg := range pkgs {
-		for _, v := range pkg.GoFiles {
-			files = append(files, v)
-		}
+		files = append(files, pkg.GoFiles...)
 	}
-	fmt.Println(files)
 
 	var ret []*GenerateResult
 	for _, file := range files {

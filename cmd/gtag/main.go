@@ -18,8 +18,9 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
-	if len(args) != 1 {
+	if *types == "" || len(args) != 1 {
 		printUsages()
+		return
 	}
 	dir := args[0]
 
