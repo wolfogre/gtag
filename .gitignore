@@ -1,4 +1,5 @@
 /.idea/
+/dist/
 
 # Created by https://www.gitignore.io/api/go,intellij,visualstudiocode,vim,macos
 # Edit at https://www.gitignore.io/?templates=go,intellij,visualstudiocode,vim,macos
