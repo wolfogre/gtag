@@ -11,15 +11,26 @@ import (
 )
 
 var (
-	files = flag.String("files", "", "source files")
-	types = flag.String("name", "", "struct types")
+	types = flag.String("types", "", "struct types")
 )
 
 func main() {
 	flag.Parse()
-	_, err := gtag.Generate(context.Background(), strings.Split(*files, ","), strings.Split(*types, ","))
+
+	args := flag.Args()
+	if len(args) != 1 {
+		printUsages()
+	}
+	dir := args[0]
+
+	_, err := gtag.Generate(context.Background(), dir, strings.Split(*types, ","))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func printUsages() {
+	fmt.Println(`gtag -types A,B dir`)
+	flag.PrintDefaults()
 }
