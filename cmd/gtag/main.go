@@ -5,20 +5,33 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/gochore/tag/internal/gtag"
 )
 
 var (
-	file = flag.String("file", "", "source file")
-	name = flag.String("name", "", "struct type name")
+	types = flag.String("types", "", "struct types")
 )
 
 func main() {
 	flag.Parse()
-	_, err := gtag.Generate(context.Background(), *file, *name)
+
+	args := flag.Args()
+	if *types == "" || len(args) != 1 {
+		printUsages()
+		return
+	}
+	dir := args[0]
+
+	_, err := gtag.Generate(context.Background(), dir, strings.Split(*types, ","))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func printUsages() {
+	fmt.Println(`gtag -types A,B dir`)
+	flag.PrintDefaults()
 }

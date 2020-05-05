@@ -10,6 +10,9 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/gochore/uniq"
+	"golang.org/x/tools/go/packages"
 )
 
 type GenerateResult struct {
@@ -17,13 +20,51 @@ type GenerateResult struct {
 	Output  string
 }
 
-func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
-	f, err := loadFile(file)
+func (r *GenerateResult) String() string {
+	return fmt.Sprintf("%s\n%s", r.Output, r.Content)
+}
+
+func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResult, error) {
+	cmd := fmt.Sprintf("gtag -types %s %s", strings.Join(types, ","), dir)
+
+	types = types[:uniq.Strings(types)]
+
+	pkgs, err := packages.Load(&packages.Config{
+		Mode:    packages.NeedFiles,
+		Context: ctx,
+		Dir:     dir,
+		Env:     os.Environ(),
+		Fset:    token.NewFileSet(),
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	fields, err := parseStructField(f, name)
+	var files []string
+	for _, pkg := range pkgs {
+		files = append(files, pkg.GoFiles...)
+	}
+
+	var ret []*GenerateResult
+	for _, file := range files {
+		result, err := generateFile(ctx, cmd, file, types)
+		if err != nil {
+			return nil, err
+		}
+		if result != nil {
+			ret = append(ret, result)
+		}
+	}
+	for _, v := range ret {
+		if err := v.Commit(); err != nil {
+			return nil, err
+		}
+	}
+	return ret, nil
+}
+
+func generateFile(ctx context.Context, cmd, file string, types []string) (*GenerateResult, error) {
+	f, err := loadFile(file)
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +74,30 @@ func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
 	}
 	pkg := f.Name.Name
 
+	fieldM := map[string][]string{}
+	for _, typ := range types {
+		fields, ok := parseStructField(f, typ)
+		if ok {
+			fieldM[typ] = fields
+		}
+	}
+
+	if len(fieldM) == 0 {
+		return nil, nil
+	}
+
 	data := templateData{
 		Package: pkg,
-		Type:    name,
-		Fields:  fields,
+		Command: cmd,
+	}
+
+	for _, typ := range types {
+		if fields, ok := fieldM[typ]; ok {
+			data.Types = append(data.Types, templateDataType{
+				Name:   typ,
+				Fields: fields,
+			})
+		}
 	}
 
 	src, err := format.Source(execute(data))
@@ -47,10 +108,6 @@ func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
 	ret := &GenerateResult{
 		Content: src,
 		Output:  strings.TrimSuffix(file, ".go") + "_tag.go",
-	}
-
-	if err := ret.Commit(); err != nil {
-		return nil, err
 	}
 
 	return ret, nil
@@ -73,7 +130,7 @@ func loadFile(name string) (*ast.File, error) {
 	return parser.ParseFile(token.NewFileSet(), name, f, 0)
 }
 
-func parseStructField(f *ast.File, name string) ([]string, error) {
+func parseStructField(f *ast.File, name string) ([]string, bool) {
 	var fields []*ast.Field
 	found := false
 
@@ -96,7 +153,7 @@ func parseStructField(f *ast.File, name string) ([]string, error) {
 	})
 
 	if !found {
-		return nil, fmt.Errorf("can not find struct %q", name)
+		return nil, found
 	}
 
 	var ret []string
@@ -106,5 +163,5 @@ func parseStructField(f *ast.File, name string) ([]string, error) {
 		}
 	}
 
-	return ret, nil
+	return ret, found
 }

@@ -9,32 +9,22 @@ const testDir = "../../test/internal/"
 
 func TestGenerate(t *testing.T) {
 	type args struct {
-		ctx  context.Context
-		file string
-		name string
+		ctx   context.Context
+		dir   string
+		types []string
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    []byte
+		want    []*GenerateResult
 		wantErr bool
 	}{
 		{
-			name: "regular",
+			name: "reguler",
 			args: args{
-				ctx:  context.Background(),
-				file: testDir + "regular/user.go",
-				name: "User",
-			},
-			want:    nil,
-			wantErr: false,
-		},
-		{
-			name: "empty",
-			args: args{
-				ctx:  context.Background(),
-				file: testDir + "regular/empty.go",
-				name: "Empty",
+				ctx:   context.Background(),
+				dir:   testDir + "regular/",
+				types: []string{"User", "Empty", "UserName", "UserName"},
 			},
 			want:    nil,
 			wantErr: false,
@@ -42,17 +32,16 @@ func TestGenerate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Generate(tt.args.ctx, tt.args.file, tt.args.name)
+			got, err := Generate(tt.args.ctx, tt.args.dir, tt.args.types)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Generate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			//if !reflect.DeepEqual(got, tt.want) {
-			//	t.Errorf("Generate() got = %s, want %s", got, tt.want)
+			//	t.Errorf("Generate() got = %v, want %v", got, tt.want)
 			//}
-			t.Logf("%s", got)
-			if err := got.Commit(); err != nil {
-				t.Error(err)
+			for _, result := range got {
+				t.Log(result)
 			}
 		})
 	}
