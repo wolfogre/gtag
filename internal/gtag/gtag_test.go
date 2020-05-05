@@ -29,6 +29,16 @@ func TestGenerate(t *testing.T) {
 			want:    nil,
 			wantErr: false,
 		},
+		{
+			name: "empty",
+			args: args{
+				ctx:  context.Background(),
+				file: testDir + "regular/empty.go",
+				name: "Empty",
+			},
+			want:    nil,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
