@@ -10,6 +10,9 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/gochore/uniq"
+	"golang.org/x/tools/go/packages"
 )
 
 type GenerateResult struct {
@@ -21,8 +24,29 @@ func (r *GenerateResult) String() string {
 	return fmt.Sprintf("%s\n%s", r.Output, r.Content)
 }
 
-func Generate(ctx context.Context, files, types []string) ([]*GenerateResult, error) {
-	cmd := fmt.Sprintf("gtag -files %s -types %s", strings.Join(files, ","), strings.Join(types, ","))
+func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResult, error) {
+	cmd := fmt.Sprintf("gtag -types %s %s", strings.Join(types, ","), dir)
+
+	types = types[:uniq.Strings(types)]
+
+	pkgs, err := packages.Load(&packages.Config{
+		Mode:    packages.NeedFiles,
+		Context: ctx,
+		Dir:     dir,
+		Env:     os.Environ(),
+		Fset:    token.NewFileSet(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var files []string
+	for _, pkg := range pkgs {
+		for _, v := range pkg.GoFiles {
+			files = append(files, v)
+		}
+	}
+	fmt.Println(files)
 
 	var ret []*GenerateResult
 	for _, file := range files {
@@ -30,7 +54,9 @@ func Generate(ctx context.Context, files, types []string) ([]*GenerateResult, er
 		if err != nil {
 			return nil, err
 		}
-		ret = append(ret, result)
+		if result != nil {
+			ret = append(ret, result)
+		}
 	}
 	for _, v := range ret {
 		if err := v.Commit(); err != nil {
@@ -57,6 +83,10 @@ func generateFile(ctx context.Context, cmd, file string, types []string) (*Gener
 		if ok {
 			fieldM[typ] = fields
 		}
+	}
+
+	if len(fieldM) == 0 {
+		return nil, nil
 	}
 
 	data := templateData{

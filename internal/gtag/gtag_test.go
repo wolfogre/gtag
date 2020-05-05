@@ -10,7 +10,7 @@ const testDir = "../../test/internal/"
 func TestGenerate(t *testing.T) {
 	type args struct {
 		ctx   context.Context
-		files []string
+		dir   string
 		types []string
 	}
 	tests := []struct {
@@ -23,8 +23,8 @@ func TestGenerate(t *testing.T) {
 			name: "reguler",
 			args: args{
 				ctx:   context.Background(),
-				files: []string{testDir + "regular/user.go", testDir + "regular/empty.go"},
-				types: []string{"User", "Empty"},
+				dir:   testDir + "regular/",
+				types: []string{"User", "Empty", "UserName", "UserName"},
 			},
 			want:    nil,
 			wantErr: false,
@@ -32,7 +32,7 @@ func TestGenerate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Generate(tt.args.ctx, tt.args.files, tt.args.types)
+			got, err := Generate(tt.args.ctx, tt.args.dir, tt.args.types)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Generate() error = %v, wantErr %v", err, tt.wantErr)
 				return
