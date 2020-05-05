@@ -1,4 +1,4 @@
-module github.com/gochore/tag
+module github.com/wolfogre/gtag
 
 go 1.14
 

@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gochore/tag/internal/gtag"
+	"github.com/wolfogre/gtag/internal/gtag"
 )
 
 var (
