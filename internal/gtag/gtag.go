@@ -49,28 +49,23 @@ func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
 	fmt.Fprintf(buffer, "valueOf%s = %s{}\n", name, name)
 	fmt.Fprintf(buffer, "typeOf%s = reflect.TypeOf(valueOf%s)\n\n", name, name)
 	for _, field := range fields {
-		for _, fieldName := range field.Names {
-			fmt.Fprintf(buffer, "_ = valueOfUser.%s\n", fieldName.Name)
-			fmt.Fprintf(buffer, "fieldOf%s%s, _ = typeOf%s.FieldByName(\"%s\")\n", name, fieldName.Name, name, fieldName.Name)
-			fmt.Fprintf(buffer, "tagOf%s%s = fieldOf%s%s.Tag\n\n", name, fieldName.Name, name, fieldName.Name)
-		}
+		fmt.Fprintf(buffer, "_ = valueOfUser.%s\n", field)
+		fmt.Fprintf(buffer, "fieldOf%s%s, _ = typeOf%s.FieldByName(\"%s\")\n", name, field, name, field)
+		fmt.Fprintf(buffer, "tagOf%s%s = fieldOf%s%s.Tag\n\n", name, field, name, field)
+
 	}
 	fmt.Fprintf(buffer, ")\n")
 
 	fmt.Fprintf(buffer, "type %sTags struct {\n", name)
 	for _, field := range fields {
-		for _, fieldName := range field.Names {
-			fmt.Fprintf(buffer, "\t%s string\n", fieldName.Name)
-		}
+		fmt.Fprintf(buffer, "\t%s string\n", field)
 	}
 	fmt.Fprintf(buffer, "}\n")
 
 	fmt.Fprintf(buffer, "func (%s) Tags(tag string) %sTags {\n", name, name)
 	fmt.Fprintf(buffer, "return %sTags{\n", name)
 	for _, field := range fields {
-		for _, fieldName := range field.Names {
-			fmt.Fprintf(buffer, "%s: tagOf%s%s.Get(tag),\n", fieldName.Name, name, fieldName.Name)
-		}
+		fmt.Fprintf(buffer, "%s: tagOf%s%s.Get(tag),\n", field, name, field)
 	}
 	fmt.Fprintf(buffer, "}\n}\n")
 
@@ -108,7 +103,7 @@ func loadFile(name string) (*ast.File, error) {
 	return parser.ParseFile(token.NewFileSet(), name, f, 0)
 }
 
-func parseStructField(f *ast.File, name string) ([]*ast.Field, error) {
+func parseStructField(f *ast.File, name string) ([]string, error) {
 	var fields []*ast.Field
 	found := false
 
@@ -134,5 +129,12 @@ func parseStructField(f *ast.File, name string) ([]*ast.Field, error) {
 		return nil, fmt.Errorf("can not find struct %q", name)
 	}
 
-	return fields, nil
+	var ret []string
+	for _, field := range fields {
+		for _, v := range field.Names {
+			ret = append(ret, v.Name)
+		}
+	}
+
+	return ret, nil
 }
