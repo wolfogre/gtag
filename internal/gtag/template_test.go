@@ -2,6 +2,8 @@ package gtag
 
 import (
 	"testing"
+
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 func Test_execute(t *testing.T) {
@@ -18,8 +20,12 @@ func Test_execute(t *testing.T) {
 			args: args{
 				data: templateData{
 					Package: "test",
-					Type:    "Test",
-					Fields:  []string{"A", "b"},
+					Types: []templateDataType{
+						{
+							Name:   "test",
+							Fields: []string{"A", "b"},
+						},
+					},
 				},
 			},
 			want: `
@@ -32,29 +38,29 @@ package test
 import "reflect"
 
 var (
-	valueOfTest = Test{}
-	typeOfTest  = reflect.TypeOf(valueOfTest)
+	valueOftest = test{}
+	typeOftest  = reflect.TypeOf(valueOftest)
 
 
-	_ = valueOfTest.A
-	fieldOfTestA, _ = typeOfTest.FieldByName("A")
-	tagOfTestA = fieldOfTestA.Tag
+	_ = valueOftest.A
+	fieldOftestA, _ = typeOftest.FieldByName("A")
+	tagOftestA = fieldOftestA.Tag
 
-	_ = valueOfTest.b
-	fieldOfTestb, _ = typeOfTest.FieldByName("b")
-	tagOfTestb = fieldOfTestb.Tag
+	_ = valueOftest.b
+	fieldOftestb, _ = typeOftest.FieldByName("b")
+	tagOftestb = fieldOftestb.Tag
 
 )
 
-type TestTags struct {
+type testTags struct {
 	A string
 	b string
 }
 
-func (Test) Tags(tag string) TestTags {
-	return TestTags{
-		A: tagOfTestA.Get(tag),
-		b: tagOfTestb.Get(tag),
+func (test) Tags(tag string) testTags {
+	return testTags{
+		A: tagOftestA.Get(tag),
+		b: tagOftestb.Get(tag),
 	}
 }
 
@@ -65,6 +71,14 @@ func (Test) Tags(tag string) TestTags {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := execute(tt.args.data); string(got) != tt.want {
 				t.Errorf("execute() = %v, want %v", got, tt.want)
+				diff := difflib.UnifiedDiff{
+					A:        difflib.SplitLines(string(got)),
+					B:        difflib.SplitLines(tt.want),
+					FromFile: "got",
+					ToFile:   "want",
+				}
+				text, _ := difflib.GetUnifiedDiffString(diff)
+				t.Log(text)
 			}
 		})
 	}

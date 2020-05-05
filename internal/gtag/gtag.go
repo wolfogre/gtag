@@ -17,13 +17,31 @@ type GenerateResult struct {
 	Output  string
 }
 
-func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
-	f, err := loadFile(file)
-	if err != nil {
-		return nil, err
-	}
+func (r *GenerateResult) String() string {
+	return fmt.Sprintf("%s\n%s", r.Output, r.Content)
+}
 
-	fields, err := parseStructField(f, name)
+func Generate(ctx context.Context, files, types []string) ([]*GenerateResult, error) {
+	cmd := fmt.Sprintf("gtag -files %s -types %s", strings.Join(files, ","), strings.Join(types, ","))
+
+	var ret []*GenerateResult
+	for _, file := range files {
+		result, err := generateFile(ctx, cmd, file, types)
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, result)
+	}
+	for _, v := range ret {
+		if err := v.Commit(); err != nil {
+			return nil, err
+		}
+	}
+	return ret, nil
+}
+
+func generateFile(ctx context.Context, cmd, file string, types []string) (*GenerateResult, error) {
+	f, err := loadFile(file)
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +51,26 @@ func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
 	}
 	pkg := f.Name.Name
 
+	fieldM := map[string][]string{}
+	for _, typ := range types {
+		fields, ok := parseStructField(f, typ)
+		if ok {
+			fieldM[typ] = fields
+		}
+	}
+
 	data := templateData{
 		Package: pkg,
-		Type:    name,
-		Fields:  fields,
+		Command: cmd,
+	}
+
+	for _, typ := range types {
+		if fields, ok := fieldM[typ]; ok {
+			data.Types = append(data.Types, templateDataType{
+				Name:   typ,
+				Fields: fields,
+			})
+		}
 	}
 
 	src, err := format.Source(execute(data))
@@ -47,10 +81,6 @@ func Generate(ctx context.Context, file, name string) (*GenerateResult, error) {
 	ret := &GenerateResult{
 		Content: src,
 		Output:  strings.TrimSuffix(file, ".go") + "_tag.go",
-	}
-
-	if err := ret.Commit(); err != nil {
-		return nil, err
 	}
 
 	return ret, nil
@@ -73,7 +103,7 @@ func loadFile(name string) (*ast.File, error) {
 	return parser.ParseFile(token.NewFileSet(), name, f, 0)
 }
 
-func parseStructField(f *ast.File, name string) ([]string, error) {
+func parseStructField(f *ast.File, name string) ([]string, bool) {
 	var fields []*ast.Field
 	found := false
 
@@ -96,7 +126,7 @@ func parseStructField(f *ast.File, name string) ([]string, error) {
 	})
 
 	if !found {
-		return nil, fmt.Errorf("can not find struct %q", name)
+		return nil, found
 	}
 
 	var ret []string
@@ -106,5 +136,5 @@ func parseStructField(f *ast.File, name string) ([]string, error) {
 		}
 	}
 
-	return ret, nil
+	return ret, found
 }
