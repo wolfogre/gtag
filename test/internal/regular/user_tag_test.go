@@ -39,7 +39,7 @@ func TestUser_Tags(t *testing.T) {
 				Id:    "id",
 				Name:  "name",
 				Email: "email",
-				age:   "age",
+				age:   "",
 			},
 		},
 	}
