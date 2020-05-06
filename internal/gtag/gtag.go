@@ -25,7 +25,7 @@ func (r *GenerateResult) String() string {
 }
 
 func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResult, error) {
-	cmd := fmt.Sprintf("gtag -types %s %s", strings.Join(types, ","), dir)
+	cmd := fmt.Sprintf("gtag -types %s .", strings.Join(types, ","))
 
 	types = types[:uniq.Strings(types)]
 
