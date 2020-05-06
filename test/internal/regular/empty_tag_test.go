@@ -31,3 +31,43 @@ func TestEmpty_Tags(t *testing.T) {
 		})
 	}
 }
+
+func TestEmpty_TagsJson(t *testing.T) {
+	tests := []struct {
+		name string
+		want EmptyTags
+	}{
+		{
+			name: "regular",
+			want: EmptyTags{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := Empty{}
+			if got := v.TagsJson(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TagsJson() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEmpty_TagsBson(t *testing.T) {
+	tests := []struct {
+		name string
+		want EmptyTags
+	}{
+		{
+			name: "regular",
+			want: EmptyTags{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := Empty{}
+			if got := v.TagsBson(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TagsBson() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

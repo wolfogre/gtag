@@ -99,3 +99,135 @@ func TestUserName_Tags(t *testing.T) {
 		})
 	}
 }
+
+func TestUserName_TagsJson(t *testing.T) {
+	type fields struct {
+		First string
+		Last  string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   UserNameTags
+	}{
+		{
+			name:   "regular",
+			fields: fields{},
+			want: UserNameTags{
+				First: "first",
+				Last:  "last",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := UserName{
+				First: tt.fields.First,
+				Last:  tt.fields.Last,
+			}
+			if got := v.TagsJson(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TagsJson() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestUserName_TagsBson(t *testing.T) {
+	type fields struct {
+		First string
+		Last  string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   UserNameTags
+	}{
+		{
+			name:   "regular",
+			fields: fields{},
+			want:   UserNameTags{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := UserName{
+				First: tt.fields.First,
+				Last:  tt.fields.Last,
+			}
+			if got := v.TagsBson(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TagsBson() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestUser_TagsJson(t *testing.T) {
+	type fields struct {
+		Id    int
+		Name  UserName
+		Email string
+		age   int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   UserTags
+	}{
+		{
+			name:   "regular",
+			fields: fields{},
+			want: UserTags{
+				Id:    "id",
+				Name:  "name",
+				Email: "email",
+				age:   "",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := User{
+				Id:    tt.fields.Id,
+				Name:  tt.fields.Name,
+				Email: tt.fields.Email,
+				age:   tt.fields.age,
+			}
+			if got := v.TagsJson(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TagsJson() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestUser_TagsBson(t *testing.T) {
+	type fields struct {
+		Id    int
+		Name  UserName
+		Email string
+		age   int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   UserTags
+	}{
+		{
+			name:   "regular",
+			fields: fields{},
+			want:   UserTags{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := User{
+				Id:    tt.fields.Id,
+				Name:  tt.fields.Name,
+				Email: tt.fields.Email,
+				age:   tt.fields.age,
+			}
+			if got := v.TagsBson(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TagsBson() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
