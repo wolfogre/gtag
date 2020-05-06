@@ -9,11 +9,17 @@ type templateData struct {
 	Package string
 	Command string
 	Types   []templateDataType
+	Tags    []templateDataTag
 }
 
 type templateDataType struct {
 	Name   string
 	Fields []string
+}
+
+type templateDataTag struct {
+	Name  string
+	Value string
 }
 
 const templateLayout = `
@@ -25,6 +31,7 @@ package {{.Package}}
 
 import "reflect"
 
+{{$tags := .Tags}}
 {{- range .Types}}
 
 var (
@@ -52,6 +59,13 @@ func ({{$type}}) Tags(tag string) {{$type}}Tags {
 {{- end}}
 	}
 }
+
+{{range $tags}}
+func (v {{$type}}) Tags{{.Name}}() {{$type}}Tags {
+	return v.Tags("{{.Value}}")
+}
+
+{{end}}
 
 {{- end}}
 

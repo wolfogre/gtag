@@ -43,6 +43,14 @@ func (User) Tags(tag string) UserTags {
 	}
 }
 
+func (v User) TagsJson() UserTags {
+	return v.Tags("json")
+}
+
+func (v User) TagsBson() UserTags {
+	return v.Tags("bson")
+}
+
 var (
 	valueOfUserName = UserName{}
 	typeOfUserName  = reflect.TypeOf(valueOfUserName)
@@ -66,4 +74,12 @@ func (UserName) Tags(tag string) UserNameTags {
 		First: tagOfUserNameFirst.Get(tag),
 		Last:  tagOfUserNameLast.Get(tag),
 	}
+}
+
+func (v UserName) TagsJson() UserNameTags {
+	return v.Tags("json")
+}
+
+func (v UserName) TagsBson() UserNameTags {
+	return v.Tags("bson")
 }

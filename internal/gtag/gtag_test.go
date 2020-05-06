@@ -12,6 +12,7 @@ func TestGenerate(t *testing.T) {
 		ctx   context.Context
 		dir   string
 		types []string
+		tags  []string
 	}
 	tests := []struct {
 		name    string
@@ -25,6 +26,7 @@ func TestGenerate(t *testing.T) {
 				ctx:   context.Background(),
 				dir:   testDir + "regular/",
 				types: []string{"User", "Empty", "UserName", "UserName"},
+				tags:  []string{"json", "bson"},
 			},
 			want:    nil,
 			wantErr: false,
@@ -32,7 +34,7 @@ func TestGenerate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Generate(tt.args.ctx, tt.args.dir, tt.args.types)
+			got, err := Generate(tt.args.ctx, tt.args.dir, tt.args.types, tt.args.tags)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Generate() error = %v, wantErr %v", err, tt.wantErr)
 				return

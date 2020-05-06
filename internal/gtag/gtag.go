@@ -24,7 +24,7 @@ func (r *GenerateResult) String() string {
 	return fmt.Sprintf("%s\n%s", r.Output, r.Content)
 }
 
-func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResult, error) {
+func Generate(ctx context.Context, dir string, types []string, tags []string) ([]*GenerateResult, error) {
 	cmd := fmt.Sprintf("gtag -types %s .", strings.Join(types, ","))
 
 	types = types[:uniq.Strings(types)]
@@ -47,7 +47,7 @@ func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResul
 
 	var ret []*GenerateResult
 	for _, file := range files {
-		result, err := generateFile(ctx, cmd, file, types)
+		result, err := generateFile(ctx, cmd, file, types, tags)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +63,7 @@ func Generate(ctx context.Context, dir string, types []string) ([]*GenerateResul
 	return ret, nil
 }
 
-func generateFile(ctx context.Context, cmd, file string, types []string) (*GenerateResult, error) {
+func generateFile(ctx context.Context, cmd, file string, types []string, tags []string) (*GenerateResult, error) {
 	f, err := loadFile(file)
 	if err != nil {
 		return nil, err
@@ -98,6 +98,13 @@ func generateFile(ctx context.Context, cmd, file string, types []string) (*Gener
 				Fields: fields,
 			})
 		}
+	}
+
+	for _, tag := range tags {
+		data.Tags = append(data.Tags, templateDataTag{
+			Name:  strings.Title(strings.ReplaceAll(tag, "_", " ")),
+			Value: tag,
+		})
 	}
 
 	src, err := format.Source(execute(data))

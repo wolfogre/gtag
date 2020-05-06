@@ -17,3 +17,11 @@ type EmptyTags struct {
 func (Empty) Tags(tag string) EmptyTags {
 	return EmptyTags{}
 }
+
+func (v Empty) TagsJson() EmptyTags {
+	return v.Tags("json")
+}
+
+func (v Empty) TagsBson() EmptyTags {
+	return v.Tags("bson")
+}

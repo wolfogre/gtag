@@ -26,6 +26,16 @@ func Test_execute(t *testing.T) {
 							Fields: []string{"A", "b"},
 						},
 					},
+					Tags: []templateDataTag{
+						{
+							Name:  "Json",
+							Value: "json",
+						},
+						{
+							Name:  "Bson",
+							Value: "bson",
+						},
+					},
 				},
 			},
 			want: `
@@ -36,6 +46,8 @@ func Test_execute(t *testing.T) {
 package test
 
 import "reflect"
+
+
 
 var (
 	valueOftest = test{}
@@ -63,6 +75,18 @@ func (test) Tags(tag string) testTags {
 		b: tagOftestb.Get(tag),
 	}
 }
+
+
+func (v test) TagsJson() testTags {
+	return v.Tags("json")
+}
+
+
+func (v test) TagsBson() testTags {
+	return v.Tags("bson")
+}
+
+
 
 `,
 		},
