@@ -46,12 +46,14 @@ var (
 {{end}}
 )
 
+// {{$type}}Tags indicate tags of type {{$type}}
 type {{$type}}Tags struct {
 {{- range .Fields}}
 	{{.}} string
 {{- end}}
 }
 
+// Tags return specified tags of {{$type}}
 func ({{$type}}) Tags(tag string) {{$type}}Tags {
 	return {{$type}}Tags{
 {{- range .Fields}}
@@ -61,6 +63,7 @@ func ({{$type}}) Tags(tag string) {{$type}}Tags {
 }
 
 {{range $tags}}
+// Tags{{.Name}} is alias of Tags("{{.Value}}")
 func (v {{$type}}) Tags{{.Name}}() {{$type}}Tags {
 	return v.Tags("{{.Value}}")
 }

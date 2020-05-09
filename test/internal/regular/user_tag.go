@@ -27,6 +27,7 @@ var (
 	tagOfUserage      = fieldOfUserage.Tag
 )
 
+// UserTags indicate tags of type User
 type UserTags struct {
 	Id    string
 	Name  string
@@ -34,6 +35,7 @@ type UserTags struct {
 	age   string
 }
 
+// Tags return specified tags of User
 func (User) Tags(tag string) UserTags {
 	return UserTags{
 		Id:    tagOfUserId.Get(tag),
@@ -43,10 +45,12 @@ func (User) Tags(tag string) UserTags {
 	}
 }
 
+// TagsBson is alias of Tags("bson")
 func (v User) TagsBson() UserTags {
 	return v.Tags("bson")
 }
 
+// TagsJson is alias of Tags("json")
 func (v User) TagsJson() UserTags {
 	return v.Tags("json")
 }
@@ -64,11 +68,13 @@ var (
 	tagOfUserNameLast      = fieldOfUserNameLast.Tag
 )
 
+// UserNameTags indicate tags of type UserName
 type UserNameTags struct {
 	First string
 	Last  string
 }
 
+// Tags return specified tags of UserName
 func (UserName) Tags(tag string) UserNameTags {
 	return UserNameTags{
 		First: tagOfUserNameFirst.Get(tag),
@@ -76,10 +82,12 @@ func (UserName) Tags(tag string) UserNameTags {
 	}
 }
 
+// TagsBson is alias of Tags("bson")
 func (v UserName) TagsBson() UserNameTags {
 	return v.Tags("bson")
 }
 
+// TagsJson is alias of Tags("json")
 func (v UserName) TagsJson() UserNameTags {
 	return v.Tags("json")
 }

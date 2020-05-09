@@ -11,17 +11,21 @@ var (
 	typeOfEmpty  = reflect.TypeOf(valueOfEmpty)
 )
 
+// EmptyTags indicate tags of type Empty
 type EmptyTags struct {
 }
 
+// Tags return specified tags of Empty
 func (Empty) Tags(tag string) EmptyTags {
 	return EmptyTags{}
 }
 
+// TagsBson is alias of Tags("bson")
 func (v Empty) TagsBson() EmptyTags {
 	return v.Tags("bson")
 }
 
+// TagsJson is alias of Tags("json")
 func (v Empty) TagsJson() EmptyTags {
 	return v.Tags("json")
 }
