@@ -31,10 +31,14 @@ func main() {
 		tags = strings.Split(*Tags, ",")
 	}
 
-	_, err := gtag.Generate(context.Background(), dir, types, tags)
+	result, err := gtag.Generate(context.Background(), dir, types, tags)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+
+	for _, v := range result {
+		fmt.Printf("generated %s -> %s\n", v.Source, v.Output)
 	}
 }
 

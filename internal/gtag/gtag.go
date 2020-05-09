@@ -17,6 +17,7 @@ import (
 
 type GenerateResult struct {
 	Content []byte
+	Source  string
 	Output  string
 }
 
@@ -115,6 +116,7 @@ func generateFile(ctx context.Context, cmd, file string, types []string, tags []
 
 	ret := &GenerateResult{
 		Content: src,
+		Source:  file,
 		Output:  strings.TrimSuffix(file, ".go") + "_tag.go",
 	}
 
