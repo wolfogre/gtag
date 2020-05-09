@@ -64,11 +64,13 @@ var (
 
 )
 
+// testTags indicate tags of type test
 type testTags struct {
 	A string
 	b string
 }
 
+// Tags return specified tags of test
 func (test) Tags(tag string) testTags {
 	return testTags{
 		A: tagOftestA.Get(tag),
@@ -77,11 +79,13 @@ func (test) Tags(tag string) testTags {
 }
 
 
+// TagsJson is alias of Tags("json")
 func (v test) TagsJson() testTags {
 	return v.Tags("json")
 }
 
 
+// TagsBson is alias of Tags("bson")
 func (v test) TagsBson() testTags {
 	return v.Tags("bson")
 }
