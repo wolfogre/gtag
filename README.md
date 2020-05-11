@@ -1,6 +1,6 @@
 # gtag
 
-<img src="./assets/gtag.png" width="40%" alt="gtag logo">
+<img src="./assets/gtag.png" width="130" alt="gtag logo">
 
 [![Build Status](https://travis-ci.com/wolfogre/gtag.svg?branch=master)](https://travis-ci.com/wolfogre/gtag)
 [![codecov](https://codecov.io/gh/wolfogre/gtag/branch/master/graph/badge.svg)](https://codecov.io/gh/wolfogre/gtag)
