@@ -32,10 +32,10 @@ var (
 
 // UserTags indicate tags of type User
 type UserTags struct {
-	Id    string
-	Name  string
-	Email string
-	age   string
+	Id    string // `json:"id"`
+	Name  string // `json:"name,omitempty"`
+	Email string // `json:"email"`
+	age   string //
 }
 
 // Tags return specified tags of User
@@ -78,8 +78,8 @@ var (
 
 // UserNameTags indicate tags of type UserName
 type UserNameTags struct {
-	First string
-	Last  string
+	First string // `json:"first"`
+	Last  string // `json:"last"`
 }
 
 // Tags return specified tags of UserName

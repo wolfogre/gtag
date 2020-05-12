@@ -22,8 +22,17 @@ func Test_execute(t *testing.T) {
 					Package: "test",
 					Types: []templateDataType{
 						{
-							Name:   "test",
-							Fields: []string{"A", "b"},
+							Name: "test",
+							Fields: []templateDataTypeField{
+								{
+									Name: "A",
+									Tag:  `json:"a"`,
+								},
+								{
+									Name: "b",
+									Tag:  ``,
+								},
+							},
 						},
 					},
 					Tags: []templateDataTag{
@@ -69,8 +78,8 @@ var (
 
 // testTags indicate tags of type test
 type testTags struct {
-	A string
-	b string
+	A string // json:"a"
+	b string // 
 }
 
 // Tags return specified tags of test
