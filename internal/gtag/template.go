@@ -14,7 +14,12 @@ type templateData struct {
 
 type templateDataType struct {
 	Name   string
-	Fields []string
+	Fields []templateDataTypeField
+}
+
+type templateDataTypeField struct {
+	Name string
+	Tag  string
 }
 
 type templateDataTag struct {
@@ -29,7 +34,10 @@ const templateLayout = `
 //go:generate {{.Command}}
 package {{.Package}}
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 {{$tags := .Tags}}
 {{- range .Types}}
@@ -40,24 +48,32 @@ var (
 
 {{$type := .Name}}
 {{- range .Fields}}
-	_ = valueOf{{$type}}.{{.}}
-	fieldOf{{$type}}{{.}}, _ = typeOf{{$type}}.FieldByName("{{.}}")
-	tagOf{{$type}}{{.}} = fieldOf{{$type}}{{.}}.Tag
+	_ = valueOf{{$type}}.{{.Name}}
+	fieldOf{{$type}}{{.Name}}, _ = typeOf{{$type}}.FieldByName("{{.Name}}")
+	tagOf{{$type}}{{.Name}} = fieldOf{{$type}}{{.Name}}.Tag
 {{end}}
 )
 
 // {{$type}}Tags indicate tags of type {{$type}}
 type {{$type}}Tags struct {
 {{- range .Fields}}
-	{{.}} string
+	{{.Name}} string // {{.Tag}}
 {{- end}}
 }
 
 // Tags return specified tags of {{$type}}
-func ({{$type}}) Tags(tag string) {{$type}}Tags {
+func ({{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 {
+		conv = convert[0]
+	}
+	if conv == nil {
+		conv = func(in string) string { return in }
+	}
+	_ = conv
 	return {{$type}}Tags{
 {{- range .Fields}}
-		{{.}}: tagOf{{$type}}{{.}}.Get(tag),
+		{{.Name}}: conv(tagOf{{$type}}{{.Name}}.Get(tag)),
 {{- end}}
 	}
 }

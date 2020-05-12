@@ -76,7 +76,7 @@ func generateFile(ctx context.Context, cmd, file string, types []string, tags []
 	}
 	pkg := f.Name.Name
 
-	fieldM := map[string][]string{}
+	fieldM := map[string][]*ast.Field{}
 	for _, typ := range types {
 		fields, ok := parseStructField(f, typ)
 		if ok {
@@ -95,9 +95,23 @@ func generateFile(ctx context.Context, cmd, file string, types []string, tags []
 
 	for _, typ := range types {
 		if fields, ok := fieldM[typ]; ok {
+			var tmpFields []templateDataTypeField
+			for _, field := range fields {
+				tag := ""
+				if field.Tag != nil {
+					tag = field.Tag.Value
+				}
+				for _, name := range field.Names {
+					tmpFields = append(tmpFields, templateDataTypeField{
+						Name: name.Name,
+						Tag:  tag,
+					})
+				}
+			}
+
 			data.Types = append(data.Types, templateDataType{
 				Name:   typ,
-				Fields: fields,
+				Fields: tmpFields,
 			})
 		}
 	}
@@ -140,7 +154,7 @@ func loadFile(name string) (*ast.File, error) {
 	return parser.ParseFile(token.NewFileSet(), name, f, 0)
 }
 
-func parseStructField(f *ast.File, name string) ([]string, bool) {
+func parseStructField(f *ast.File, name string) ([]*ast.Field, bool) {
 	var fields []*ast.Field
 	found := false
 
@@ -166,12 +180,5 @@ func parseStructField(f *ast.File, name string) ([]string, bool) {
 		return nil, found
 	}
 
-	var ret []string
-	for _, field := range fields {
-		for _, v := range field.Names {
-			ret = append(ret, v.Name)
-		}
-	}
-
-	return ret, found
+	return fields, found
 }

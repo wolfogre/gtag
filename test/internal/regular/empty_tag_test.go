@@ -2,12 +2,14 @@ package regular
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
 func TestEmpty_Tags(t *testing.T) {
 	type args struct {
-		tag string
+		tag     string
+		convert []func(string) string
 	}
 	tests := []struct {
 		name string
@@ -21,11 +23,27 @@ func TestEmpty_Tags(t *testing.T) {
 			},
 			want: EmptyTags{},
 		},
+		{
+			name: "convert ToUpper",
+			args: args{
+				tag:     "json",
+				convert: []func(string) string{strings.ToUpper},
+			},
+			want: EmptyTags{},
+		},
+		{
+			name: "convert nil",
+			args: args{
+				tag:     "json",
+				convert: []func(string) string{nil},
+			},
+			want: EmptyTags{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			em := Empty{}
-			if got := em.Tags(tt.args.tag); !reflect.DeepEqual(got, tt.want) {
+			if got := em.Tags(tt.args.tag, tt.args.convert...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Tags() = %v, want %v", got, tt.want)
 			}
 		})

@@ -2,7 +2,7 @@ package regular
 
 type User struct {
 	Id    int      `json:"id"`
-	Name  UserName `json:"name"`
+	Name  UserName `json:"name,omitempty"`
 	Email string   `json:"email"`
 	age   int
 }
