@@ -27,7 +27,6 @@ func (Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	_ = conv
 	return EmptyTags{}
 }
 

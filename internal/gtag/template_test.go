@@ -91,7 +91,6 @@ func (test) Tags(tag string, convert ...func(string) string) testTags {
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	_ = conv
 	return testTags{
 		A: conv(tagOftestA.Get(tag)),
 		b: conv(tagOftestb.Get(tag)),

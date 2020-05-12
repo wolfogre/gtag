@@ -42,7 +42,6 @@ func (User) Tags(tag string, convert ...func(string) string) UserTags {
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	_ = conv
 	return UserTags{
 		Id:    conv(tagOfUserId.Get(tag)),
 		Name:  conv(tagOfUserName.Get(tag)),

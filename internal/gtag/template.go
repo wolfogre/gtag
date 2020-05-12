@@ -70,7 +70,6 @@ func ({{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags 
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	_ = conv
 	return {{$type}}Tags{
 {{- range .Fields}}
 		{{.Name}}: conv(tagOf{{$type}}{{.Name}}.Get(tag)),
