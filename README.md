@@ -64,9 +64,9 @@ var (
 
 // UserTags indicate tags of type User
 type UserTags struct {
-	Id    string
-	Name  string
-	Email string
+	Id    string // `bson:"_id"`
+	Name  string // `bson:"name"`
+	Email string // `bson:"email"`
 }
 
 // Tags return specified tags of User

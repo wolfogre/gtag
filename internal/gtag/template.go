@@ -64,8 +64,11 @@ type {{$type}}Tags struct {
 // Tags return specified tags of {{$type}}
 func ({{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
-	if len(convert) > 0 && convert[0] != nil {
+	if len(convert) > 0 {
 		conv = convert[0]
+	}
+	if conv == nil {
+		conv = func(in string) string { return in }
 	}
 	_ = conv
 	return {{$type}}Tags{

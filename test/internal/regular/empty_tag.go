@@ -21,8 +21,11 @@ type EmptyTags struct {
 // Tags return specified tags of Empty
 func (Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
-	if len(convert) > 0 && convert[0] != nil {
+	if len(convert) > 0 {
 		conv = convert[0]
+	}
+	if conv == nil {
+		conv = func(in string) string { return in }
 	}
 	_ = conv
 	return EmptyTags{}
