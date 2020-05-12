@@ -47,7 +47,6 @@ func (User) Tags(tag string, convert ...func(string) string) UserTags {
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	_ = conv
 	return UserTags{
 		Id:    conv(tagOfUserId.Get(tag)),
 		Name:  conv(tagOfUserName.Get(tag)),
@@ -94,7 +93,6 @@ func (UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	_ = conv
 	return UserNameTags{
 		First: conv(tagOfUserNameFirst.Get(tag)),
 		Last:  conv(tagOfUserNameLast.Get(tag)),
