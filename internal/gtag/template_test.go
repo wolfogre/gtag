@@ -3,7 +3,7 @@ package gtag
 import (
 	"testing"
 
-	"github.com/pmezard/go-difflib/difflib"
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_execute(t *testing.T) {
@@ -45,7 +45,10 @@ func Test_execute(t *testing.T) {
 //go:generate 
 package test
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 
 
@@ -71,10 +74,15 @@ type testTags struct {
 }
 
 // Tags return specified tags of test
-func (test) Tags(tag string) testTags {
+func (test) Tags(tag string, convert ...func(string) string) testTags {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 && convert[0] != nil {
+		conv = convert[0]
+	}
+	_ = conv
 	return testTags{
-		A: tagOftestA.Get(tag),
-		b: tagOftestb.Get(tag),
+		A: conv(tagOftestA.Get(tag)),
+		b: conv(tagOftestb.Get(tag)),
 	}
 }
 
@@ -99,14 +107,7 @@ func (v test) TagsBson() testTags {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := string(execute(tt.args.data)); got != tt.want {
 				t.Errorf("execute() = %v, want %v", got, tt.want)
-				diff := difflib.UnifiedDiff{
-					A:        difflib.SplitLines(got),
-					B:        difflib.SplitLines(tt.want),
-					FromFile: "got",
-					ToFile:   "want",
-				}
-				text, _ := difflib.GetUnifiedDiffString(diff)
-				t.Log(text)
+				t.Error(cmp.Diff(got, tt.want))
 			}
 		})
 	}

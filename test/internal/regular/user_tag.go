@@ -4,7 +4,10 @@
 //go:generate gtag -types Empty,User,UserName -tags bson,json .
 package regular
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 var (
 	valueOfUser = User{}
@@ -36,12 +39,17 @@ type UserTags struct {
 }
 
 // Tags return specified tags of User
-func (User) Tags(tag string) UserTags {
+func (User) Tags(tag string, convert ...func(string) string) UserTags {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 && convert[0] != nil {
+		conv = convert[0]
+	}
+	_ = conv
 	return UserTags{
-		Id:    tagOfUserId.Get(tag),
-		Name:  tagOfUserName.Get(tag),
-		Email: tagOfUserEmail.Get(tag),
-		age:   tagOfUserage.Get(tag),
+		Id:    conv(tagOfUserId.Get(tag)),
+		Name:  conv(tagOfUserName.Get(tag)),
+		Email: conv(tagOfUserEmail.Get(tag)),
+		age:   conv(tagOfUserage.Get(tag)),
 	}
 }
 
@@ -75,10 +83,15 @@ type UserNameTags struct {
 }
 
 // Tags return specified tags of UserName
-func (UserName) Tags(tag string) UserNameTags {
+func (UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 && convert[0] != nil {
+		conv = convert[0]
+	}
+	_ = conv
 	return UserNameTags{
-		First: tagOfUserNameFirst.Get(tag),
-		Last:  tagOfUserNameLast.Get(tag),
+		First: conv(tagOfUserNameFirst.Get(tag)),
+		Last:  conv(tagOfUserNameLast.Get(tag)),
 	}
 }
 

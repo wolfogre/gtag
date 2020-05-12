@@ -53,26 +53,37 @@ and you will get file user_tag.go:
 //go:generate gtag -types User -tags bson .
 package tutorial
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 var (
 	// ...
 )
 
+// UserTags indicate tags of type User
 type UserTags struct {
 	Id    string
 	Name  string
 	Email string
 }
 
-func (User) Tags(tag string) UserTags {
+// Tags return specified tags of User
+func (User) Tags(tag string, convert ...func(string) string) UserTags {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 && convert[0] != nil {
+		conv = convert[0]
+	}
+	_ = conv
 	return UserTags{
-		Id:    tagOfUserId.Get(tag),
-		Name:  tagOfUserName.Get(tag),
-		Email: tagOfUserEmail.Get(tag),
+		Id:    conv(tagOfUserId.Get(tag)),
+		Name:  conv(tagOfUserName.Get(tag)),
+		Email: conv(tagOfUserEmail.Get(tag)),
 	}
 }
 
+// TagsBson is alias of Tags("bson")
 func (v User) TagsBson() UserTags {
 	return v.Tags("bson")
 }

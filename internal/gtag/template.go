@@ -29,7 +29,10 @@ const templateLayout = `
 //go:generate {{.Command}}
 package {{.Package}}
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 {{$tags := .Tags}}
 {{- range .Types}}
@@ -54,10 +57,15 @@ type {{$type}}Tags struct {
 }
 
 // Tags return specified tags of {{$type}}
-func ({{$type}}) Tags(tag string) {{$type}}Tags {
+func ({{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 && convert[0] != nil {
+		conv = convert[0]
+	}
+	_ = conv
 	return {{$type}}Tags{
 {{- range .Fields}}
-		{{.}}: tagOf{{$type}}{{.}}.Get(tag),
+		{{.}}: conv(tagOf{{$type}}{{.}}.Get(tag)),
 {{- end}}
 	}
 }
