@@ -158,22 +158,25 @@ func parseStructField(f *ast.File, name string) ([]*ast.Field, bool) {
 	var fields []*ast.Field
 	found := false
 
-	ast.Inspect(f, func(n ast.Node) bool {
+	ast.Inspect(f, func(node ast.Node) bool {
 		if found {
 			return false
 		}
-		switch t := n.(type) {
-		case *ast.TypeSpec:
+		if t, ok := node.(*ast.TypeSpec); ok {
 			if t.Name != nil && t.Name.Name == name {
-				return true
+				ast.Inspect(node, func(structNode ast.Node) bool {
+					if found {
+						return false
+					}
+					if t, ok := structNode.(*ast.StructType); ok {
+						found = true
+						fields = t.Fields.List
+					}
+					return !found
+				})
 			}
-			return false
-		case *ast.StructType:
-			fields = t.Fields.List
-			found = true
-			return false
 		}
-		return true
+		return !found
 	})
 
 	if !found {
