@@ -11,12 +11,25 @@ import (
 )
 
 var (
-	Types = flag.String("types", "", "struct types")
-	Tags  = flag.String("tags", "", "preset tags")
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+	builtBy = "unknown"
+)
+
+var (
+	Types   = flag.String("types", "", "struct types")
+	Tags    = flag.String("tags", "", "preset tags")
+	Version = flag.Bool("version", false, " show version")
 )
 
 func main() {
 	flag.Parse()
+
+	if *Version {
+		fmt.Printf("gtag %s, commit %s, built at %s by %s\n", version, commit, date, builtBy)
+		return
+	}
 
 	args := flag.Args()
 	if *Types == "" || len(args) != 1 {

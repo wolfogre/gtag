@@ -9,6 +9,14 @@ builds:
     - linux
     - darwin
     - windows
+  goarch:
+    - 386
+    - amd64
+    - arm
+    - arm64
+  ignore:
+    - goos: darwin
+      goarch: 386
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -19,3 +27,13 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
+brews:
+  -
+    github:
+      owner: wolfogre
+      name: homebrew-tap
+    folder: Formula
+    homepage: "https://github.com/wolfogre/gtag"
+    description: "Help you to get golang struct's tags elegantly."
+    test: system "#{bin}/gtag -version"
+    install: bin.install "gtag"
