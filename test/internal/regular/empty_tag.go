@@ -19,7 +19,7 @@ type EmptyTags struct {
 }
 
 // Tags return specified tags of Empty
-func (Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
+func (*Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
 	if len(convert) > 0 {
 		conv = convert[0]
@@ -31,11 +31,11 @@ func (Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v Empty) TagsBson() EmptyTags {
+func (v *Empty) TagsBson() EmptyTags {
 	return v.Tags("bson")
 }
 
 // TagsJson is alias of Tags("json")
-func (v Empty) TagsJson() EmptyTags {
+func (v *Empty) TagsJson() EmptyTags {
 	return v.Tags("json")
 }
