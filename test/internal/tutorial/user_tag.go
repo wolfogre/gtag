@@ -34,7 +34,7 @@ type UserTags struct {
 }
 
 // Tags return specified tags of User
-func (User) Tags(tag string, convert ...func(string) string) UserTags {
+func (*User) Tags(tag string, convert ...func(string) string) UserTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
 	if len(convert) > 0 {
 		conv = convert[0]
@@ -50,6 +50,7 @@ func (User) Tags(tag string, convert ...func(string) string) UserTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v User) TagsBson() UserTags {
+func (*User) TagsBson() UserTags {
+	var v *User
 	return v.Tags("bson")
 }
