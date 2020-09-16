@@ -83,7 +83,7 @@ type testTags struct {
 }
 
 // Tags return specified tags of test
-func (test) Tags(tag string, convert ...func(string) string) testTags {
+func (*test) Tags(tag string, convert ...func(string) string) testTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
 	if len(convert) > 0 {
 		conv = convert[0]
@@ -99,13 +99,15 @@ func (test) Tags(tag string, convert ...func(string) string) testTags {
 
 
 // TagsJson is alias of Tags("json")
-func (v test) TagsJson() testTags {
+func (*test) TagsJson() testTags {
+	var v *test
 	return v.Tags("json")
 }
 
 
 // TagsBson is alias of Tags("bson")
-func (v test) TagsBson() testTags {
+func (*test) TagsBson() testTags {
+	var v *test
 	return v.Tags("bson")
 }
 

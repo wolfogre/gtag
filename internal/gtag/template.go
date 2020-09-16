@@ -62,7 +62,7 @@ type {{$type}}Tags struct {
 }
 
 // Tags return specified tags of {{$type}}
-func ({{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags {
+func (*{{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
 	if len(convert) > 0 {
 		conv = convert[0]
@@ -79,7 +79,8 @@ func ({{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags 
 
 {{range $tags}}
 // Tags{{.Name}} is alias of Tags("{{.Value}}")
-func (v {{$type}}) Tags{{.Name}}() {{$type}}Tags {
+func (*{{$type}}) Tags{{.Name}}() {{$type}}Tags {
+	var v *{{$type}}
 	return v.Tags("{{.Value}}")
 }
 

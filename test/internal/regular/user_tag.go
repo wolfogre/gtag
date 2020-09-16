@@ -39,7 +39,7 @@ type UserTags struct {
 }
 
 // Tags return specified tags of User
-func (User) Tags(tag string, convert ...func(string) string) UserTags {
+func (*User) Tags(tag string, convert ...func(string) string) UserTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
 	if len(convert) > 0 {
 		conv = convert[0]
@@ -56,12 +56,14 @@ func (User) Tags(tag string, convert ...func(string) string) UserTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v User) TagsBson() UserTags {
+func (*User) TagsBson() UserTags {
+	var v *User
 	return v.Tags("bson")
 }
 
 // TagsJson is alias of Tags("json")
-func (v User) TagsJson() UserTags {
+func (*User) TagsJson() UserTags {
+	var v *User
 	return v.Tags("json")
 }
 
@@ -85,7 +87,7 @@ type UserNameTags struct {
 }
 
 // Tags return specified tags of UserName
-func (UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
+func (*UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
 	if len(convert) > 0 {
 		conv = convert[0]
@@ -100,11 +102,13 @@ func (UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v UserName) TagsBson() UserNameTags {
+func (*UserName) TagsBson() UserNameTags {
+	var v *UserName
 	return v.Tags("bson")
 }
 
 // TagsJson is alias of Tags("json")
-func (v UserName) TagsJson() UserNameTags {
+func (*UserName) TagsJson() UserNameTags {
+	var v *UserName
 	return v.Tags("json")
 }
