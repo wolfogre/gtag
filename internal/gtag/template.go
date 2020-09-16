@@ -79,7 +79,8 @@ func (*{{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags
 
 {{range $tags}}
 // Tags{{.Name}} is alias of Tags("{{.Value}}")
-func (v *{{$type}}) Tags{{.Name}}() {{$type}}Tags {
+func (*{{$type}}) Tags{{.Name}}() {{$type}}Tags {
+	var v *{{$type}}
 	return v.Tags("{{.Value}}")
 }
 

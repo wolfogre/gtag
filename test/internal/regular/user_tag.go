@@ -56,12 +56,14 @@ func (*User) Tags(tag string, convert ...func(string) string) UserTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v *User) TagsBson() UserTags {
+func (*User) TagsBson() UserTags {
+	var v *User
 	return v.Tags("bson")
 }
 
 // TagsJson is alias of Tags("json")
-func (v *User) TagsJson() UserTags {
+func (*User) TagsJson() UserTags {
+	var v *User
 	return v.Tags("json")
 }
 
@@ -100,11 +102,13 @@ func (*UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v *UserName) TagsBson() UserNameTags {
+func (*UserName) TagsBson() UserNameTags {
+	var v *UserName
 	return v.Tags("bson")
 }
 
 // TagsJson is alias of Tags("json")
-func (v *UserName) TagsJson() UserNameTags {
+func (*UserName) TagsJson() UserNameTags {
+	var v *UserName
 	return v.Tags("json")
 }

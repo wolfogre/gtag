@@ -99,13 +99,15 @@ func (*test) Tags(tag string, convert ...func(string) string) testTags {
 
 
 // TagsJson is alias of Tags("json")
-func (v *test) TagsJson() testTags {
+func (*test) TagsJson() testTags {
+	var v *test
 	return v.Tags("json")
 }
 
 
 // TagsBson is alias of Tags("bson")
-func (v *test) TagsBson() testTags {
+func (*test) TagsBson() testTags {
+	var v *test
 	return v.Tags("bson")
 }
 

@@ -31,11 +31,13 @@ func (*Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 }
 
 // TagsBson is alias of Tags("bson")
-func (v *Empty) TagsBson() EmptyTags {
+func (*Empty) TagsBson() EmptyTags {
+	var v *Empty
 	return v.Tags("bson")
 }
 
 // TagsJson is alias of Tags("json")
-func (v *Empty) TagsJson() EmptyTags {
+func (*Empty) TagsJson() EmptyTags {
+	var v *Empty
 	return v.Tags("json")
 }
