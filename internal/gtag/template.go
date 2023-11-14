@@ -77,11 +77,33 @@ func (*{{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags
 	}
 }
 
+// TagSlice return specified tag slice of {{$type}}
+func (*{{$type}}) TagSlice(tag string, convert ...func(string) string) []string {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 {
+		conv = convert[0]
+	}
+	if conv == nil {
+		conv = func(in string) string { return in }
+	}
+	return []string{
+{{- range .Fields}}
+		conv(tagOf{{$type}}{{.Name}}.Get(tag)),
+{{- end}}
+	}
+}
+
 {{range $tags}}
 // Tags{{.Name}} is alias of Tags("{{.Value}}")
 func (*{{$type}}) Tags{{.Name}}() {{$type}}Tags {
 	var v *{{$type}}
 	return v.Tags("{{.Value}}")
+}
+
+// TagSlice{{.Name}} is alias of TagSlice("{{.Value}}")
+func (*{{$type}}) TagSlice{{.Name}}() []string {
+	var v *{{$type}}
+	return v.TagSlice("{{.Value}}")
 }
 
 {{end}}

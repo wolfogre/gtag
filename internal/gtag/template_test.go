@@ -97,6 +97,21 @@ func (*test) Tags(tag string, convert ...func(string) string) testTags {
 	}
 }
 
+// TagSlice return specified tag slice of test
+func (*test) TagSlice(tag string, convert ...func(string) string) []string {
+	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
+	if len(convert) > 0 {
+		conv = convert[0]
+	}
+	if conv == nil {
+		conv = func(in string) string { return in }
+	}
+	return []string{
+		conv(tagOftestA.Get(tag)),
+		conv(tagOftestb.Get(tag)),
+	}
+}
+
 
 // TagsJson is alias of Tags("json")
 func (*test) TagsJson() testTags {
@@ -104,11 +119,23 @@ func (*test) TagsJson() testTags {
 	return v.Tags("json")
 }
 
+// TagSliceJson is alias of TagSlice("json")
+func (*test) TagSliceJson() []string {
+	var v *test
+	return v.TagSlice("json")
+}
+
 
 // TagsBson is alias of Tags("bson")
 func (*test) TagsBson() testTags {
 	var v *test
 	return v.Tags("bson")
+}
+
+// TagSliceBson is alias of TagSlice("bson")
+func (*test) TagSliceBson() []string {
+	var v *test
+	return v.TagSlice("bson")
 }
 
 
