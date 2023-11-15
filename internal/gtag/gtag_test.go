@@ -26,7 +26,7 @@ func TestGenerate(t *testing.T) {
 				ctx:   context.Background(),
 				dir:   testDir + "regular/",
 				types: []string{"User", "Empty", "UserName", "UserName"},
-				tags:  []string{"json", "bson"},
+				tags:  []string{"json", "bson", "json_x"},
 			},
 			want:    nil,
 			wantErr: false,

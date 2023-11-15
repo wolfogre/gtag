@@ -7,11 +7,12 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"strings"
 
 	"github.com/gochore/uniq"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -29,7 +30,7 @@ func Generate(ctx context.Context, dir string, types []string, tags []string) ([
 	types = types[:uniq.Strings(types)]
 	tags = tags[:uniq.Strings(tags)]
 
-	cmd := fmt.Sprintf("gtag -types %s -tags %s .", strings.Join(types, ","), strings.Join(tags, ","))
+	cmd := fmt.Sprintf("go run github.com/wolfogre/gtag/cmd/gtag -types %s -tags %s .", strings.Join(types, ","), strings.Join(tags, ","))
 
 	pkgs, err := packages.Load(&packages.Config{
 		Mode:    packages.NeedFiles,
@@ -49,7 +50,7 @@ func Generate(ctx context.Context, dir string, types []string, tags []string) ([
 
 	var ret []*GenerateResult
 	for _, file := range files {
-		result, err := generateFile(ctx, cmd, file, types, tags)
+		result, err := generateFile(cmd, file, types, tags)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +66,7 @@ func Generate(ctx context.Context, dir string, types []string, tags []string) ([
 	return ret, nil
 }
 
-func generateFile(ctx context.Context, cmd, file string, types []string, tags []string) (*GenerateResult, error) {
+func generateFile(cmd, file string, types []string, tags []string) (*GenerateResult, error) {
 	f, err := loadFile(file)
 	if err != nil {
 		return nil, err
@@ -118,7 +119,7 @@ func generateFile(ctx context.Context, cmd, file string, types []string, tags []
 
 	for _, tag := range tags {
 		data.Tags = append(data.Tags, templateDataTag{
-			Name:  strings.Title(strings.ReplaceAll(tag, "_", " ")),
+			Name:  strings.ReplaceAll(cases.Title(language.English).String(strings.ReplaceAll(tag, "_", " ")), " ", ""),
 			Value: tag,
 		})
 	}
@@ -141,7 +142,7 @@ func (r *GenerateResult) Commit() error {
 	if len(r.Content) == 0 {
 		return nil
 	}
-	return ioutil.WriteFile(r.Output, r.Content, 0666)
+	return os.WriteFile(r.Output, r.Content, 0o644)
 }
 
 func loadFile(name string) (*ast.File, error) {
