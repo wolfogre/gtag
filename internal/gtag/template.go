@@ -61,15 +61,10 @@ type {{$type}}Tags struct {
 {{- end}}
 
 	_tagsList []string
-	_tagsMap  map[string]string
 }
 
 func (t *{{$type}}Tags) List() []string {
 	return t._tagsList
-}
-
-func (t *{{$type}}Tags) Map() map[string]string {
-	return t._tagsMap
 }
 
 // Tags return specified tags of {{$type}}
@@ -88,11 +83,6 @@ func (*{{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags
 		_tagsList: []string{
 {{- range .Fields}}
 			conv(tagOf{{$type}}{{.Name}}.Get(tag)),
-{{- end}}
-		},
-		_tagsMap: map[string]string{
-{{- range .Fields}}
-			"{{.Name}}": conv(tagOf{{$type}}{{.Name}}.Get(tag)),
 {{- end}}
 		},
 	}

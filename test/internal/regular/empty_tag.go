@@ -17,15 +17,10 @@ var (
 // EmptyTags indicate tags of type Empty
 type EmptyTags struct {
 	_tagsList []string
-	_tagsMap  map[string]string
 }
 
 func (t *EmptyTags) List() []string {
 	return t._tagsList
-}
-
-func (t *EmptyTags) Map() map[string]string {
-	return t._tagsMap
 }
 
 // Tags return specified tags of Empty
@@ -39,7 +34,6 @@ func (*Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 	}
 	return EmptyTags{
 		_tagsList: []string{},
-		_tagsMap:  map[string]string{},
 	}
 }
 
