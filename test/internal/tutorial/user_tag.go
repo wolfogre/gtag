@@ -33,6 +33,15 @@ type UserTags struct {
 	Email string // `bson:"email"`
 }
 
+// Values return all tags of User as slice
+func (t *UserTags) Values() []string {
+	return []string{
+		t.Id,
+		t.Name,
+		t.Email,
+	}
+}
+
 // Tags return specified tags of User
 func (*User) Tags(tag string, convert ...func(string) string) UserTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
