@@ -80,6 +80,17 @@ var (
 type testTags struct {
 	A string // json:"a"
 	b string // 
+
+	_tagsList []string
+	_tagsMap  map[string]string
+}
+
+func (t *testTags) List() []string {
+	return t._tagsList
+}
+
+func (t *testTags) Map() map[string]string {
+	return t._tagsMap
 }
 
 // Tags return specified tags of test
@@ -94,6 +105,14 @@ func (*test) Tags(tag string, convert ...func(string) string) testTags {
 	return testTags{
 		A: conv(tagOftestA.Get(tag)),
 		b: conv(tagOftestb.Get(tag)),
+		_tagsList: []string{
+			conv(tagOftestA.Get(tag)),
+			conv(tagOftestb.Get(tag)),
+		},
+		_tagsMap: map[string]string{
+			"A": conv(tagOftestA.Get(tag)),
+			"b": conv(tagOftestb.Get(tag)),
+		},
 	}
 }
 
