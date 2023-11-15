@@ -7,7 +7,6 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -49,7 +48,7 @@ func Generate(ctx context.Context, dir string, types []string, tags []string) ([
 
 	var ret []*GenerateResult
 	for _, file := range files {
-		result, err := generateFile(ctx, cmd, file, types, tags)
+		result, err := generateFile(cmd, file, types, tags)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +64,7 @@ func Generate(ctx context.Context, dir string, types []string, tags []string) ([
 	return ret, nil
 }
 
-func generateFile(ctx context.Context, cmd, file string, types []string, tags []string) (*GenerateResult, error) {
+func generateFile(cmd, file string, types []string, tags []string) (*GenerateResult, error) {
 	f, err := loadFile(file)
 	if err != nil {
 		return nil, err
@@ -141,7 +140,7 @@ func (r *GenerateResult) Commit() error {
 	if len(r.Content) == 0 {
 		return nil
 	}
-	return ioutil.WriteFile(r.Output, r.Content, 0666)
+	return os.WriteFile(r.Output, r.Content, 0o644)
 }
 
 func loadFile(name string) (*ast.File, error) {
