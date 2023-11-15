@@ -61,6 +61,7 @@ type {{$type}}Tags struct {
 {{- end}}
 }
 
+// Values return all tags of {{$type}} as slice
 func (t *{{$type}}Tags) Values() []string {
 	return []string{
 {{- range .Fields}}

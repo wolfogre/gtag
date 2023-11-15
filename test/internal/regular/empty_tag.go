@@ -18,6 +18,7 @@ var (
 type EmptyTags struct {
 }
 
+// Values return all tags of Empty as slice
 func (t *EmptyTags) Values() []string {
 	return []string{}
 }

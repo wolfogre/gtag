@@ -38,6 +38,7 @@ type UserTags struct {
 	age   string //
 }
 
+// Values return all tags of User as slice
 func (t *UserTags) Values() []string {
 	return []string{
 		t.Id,
@@ -95,6 +96,7 @@ type UserNameTags struct {
 	Last  string // `json:"last"`
 }
 
+// Values return all tags of UserName as slice
 func (t *UserNameTags) Values() []string {
 	return []string{
 		t.First,

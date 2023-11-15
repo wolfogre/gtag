@@ -82,6 +82,7 @@ type testTags struct {
 	b string // 
 }
 
+// Values return all tags of test as slice
 func (t *testTags) Values() []string {
 	return []string{
 		t.A,
