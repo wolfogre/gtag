@@ -1,22 +1,20 @@
-# This is an example goreleaser.yaml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
 builds:
 -
   main: ./cmd/gtag/main.go
   env:
-  - CGO_ENABLED=0
+    - CGO_ENABLED=0
   goos:
-    - linux
-    - darwin
-    - windows
+    - "linux"
+    - "darwin"
+    - "windows"
   goarch:
-    - 386
-    - amd64
-    - arm
-    - arm64
+    - "386"
+    - "amd64"
+    - "arm"
+    - "arm64"
   ignore:
-    - goos: darwin
-      goarch: 386
+    - goos: "darwin"
+      goarch: "386"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -27,13 +25,3 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brews:
-  -
-    github:
-      owner: wolfogre
-      name: homebrew-tap
-    folder: Formula
-    homepage: "https://github.com/wolfogre/gtag"
-    description: "Help you to get golang struct's tags elegantly."
-    test: system "#{bin}/gtag -version"
-    install: bin.install "gtag"
