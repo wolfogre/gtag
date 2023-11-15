@@ -18,6 +18,11 @@ var (
 type EmptyTags struct {
 }
 
+// Values return all tags of Empty as slice
+func (t *EmptyTags) Values() []string {
+	return []string{}
+}
+
 // Tags return specified tags of Empty
 func (*Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }

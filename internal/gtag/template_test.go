@@ -82,6 +82,14 @@ type testTags struct {
 	b string // 
 }
 
+// Values return all tags of test as slice
+func (t *testTags) Values() []string {
+	return []string{
+		t.A,
+		t.b,
+	}
+}
+
 // Tags return specified tags of test
 func (*test) Tags(tag string, convert ...func(string) string) testTags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }

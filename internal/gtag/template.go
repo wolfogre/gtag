@@ -61,6 +61,15 @@ type {{$type}}Tags struct {
 {{- end}}
 }
 
+// Values return all tags of {{$type}} as slice
+func (t *{{$type}}Tags) Values() []string {
+	return []string{
+{{- range .Fields}}
+		t.{{.Name}},
+{{- end}}
+	}
+}
+
 // Tags return specified tags of {{$type}}
 func (*{{$type}}) Tags(tag string, convert ...func(string) string) {{$type}}Tags {
 	conv := func(in string) string { return strings.TrimSpace(strings.Split(in, ",")[0]) }
