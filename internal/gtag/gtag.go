@@ -7,6 +7,8 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"os"
 	"strings"
 
@@ -117,7 +119,7 @@ func generateFile(cmd, file string, types []string, tags []string) (*GenerateRes
 
 	for _, tag := range tags {
 		data.Tags = append(data.Tags, templateDataTag{
-			Name:  strings.Title(strings.ReplaceAll(tag, "_", " ")),
+			Name:  strings.ReplaceAll(cases.Title(language.English).String(strings.ReplaceAll(tag, "_", " ")), " ", ""),
 			Value: tag,
 		})
 	}

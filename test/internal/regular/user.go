@@ -1,7 +1,7 @@
 package regular
 
 type User struct {
-	Id    int      `json:"id"`
+	Id    int      `json:"id" json_x:"id_x"`
 	Name  UserName `json:"name,omitempty"`
 	Email string   `json:"email"`
 	age   int
