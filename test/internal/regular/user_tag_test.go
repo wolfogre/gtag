@@ -279,7 +279,7 @@ func TestUser_TagsBson(t *testing.T) {
 	}
 }
 
-func TestUser_TagsSlice(t *testing.T) {
+func TestUser_TagsValues(t *testing.T) {
 	type fields struct {
 		Id    int
 		Name  UserName
@@ -321,7 +321,7 @@ func TestUser_TagsSlice(t *testing.T) {
 				Email: tt.fields.Email,
 				age:   tt.fields.age,
 			}
-			if got := us.Tags(tt.args.tag, tt.args.convert...); !reflect.DeepEqual(got.List(), tt.want) {
+			if got := us.Tags(tt.args.tag, tt.args.convert...); !reflect.DeepEqual(got.Values(), tt.want) {
 				t.Errorf("Tags() = %v, want %v", got, tt.want)
 			}
 		})

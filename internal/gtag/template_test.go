@@ -80,12 +80,13 @@ var (
 type testTags struct {
 	A string // json:"a"
 	b string // 
-
-	_tagsList []string
 }
 
-func (t *testTags) List() []string {
-	return t._tagsList
+func (t *testTags) Values() []string {
+	return []string{
+		t.A,
+		t.b,
+	}
 }
 
 // Tags return specified tags of test
@@ -100,10 +101,6 @@ func (*test) Tags(tag string, convert ...func(string) string) testTags {
 	return testTags{
 		A: conv(tagOftestA.Get(tag)),
 		b: conv(tagOftestb.Get(tag)),
-		_tagsList: []string{
-			conv(tagOftestA.Get(tag)),
-			conv(tagOftestb.Get(tag)),
-		},
 	}
 }
 

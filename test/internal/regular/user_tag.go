@@ -36,12 +36,15 @@ type UserTags struct {
 	Name  string // `json:"name,omitempty"`
 	Email string // `json:"email"`
 	age   string //
-
-	_tagsList []string
 }
 
-func (t *UserTags) List() []string {
-	return t._tagsList
+func (t *UserTags) Values() []string {
+	return []string{
+		t.Id,
+		t.Name,
+		t.Email,
+		t.age,
+	}
 }
 
 // Tags return specified tags of User
@@ -58,12 +61,6 @@ func (*User) Tags(tag string, convert ...func(string) string) UserTags {
 		Name:  conv(tagOfUserName.Get(tag)),
 		Email: conv(tagOfUserEmail.Get(tag)),
 		age:   conv(tagOfUserage.Get(tag)),
-		_tagsList: []string{
-			conv(tagOfUserId.Get(tag)),
-			conv(tagOfUserName.Get(tag)),
-			conv(tagOfUserEmail.Get(tag)),
-			conv(tagOfUserage.Get(tag)),
-		},
 	}
 }
 
@@ -96,12 +93,13 @@ var (
 type UserNameTags struct {
 	First string // `json:"first"`
 	Last  string // `json:"last"`
-
-	_tagsList []string
 }
 
-func (t *UserNameTags) List() []string {
-	return t._tagsList
+func (t *UserNameTags) Values() []string {
+	return []string{
+		t.First,
+		t.Last,
+	}
 }
 
 // Tags return specified tags of UserName
@@ -116,10 +114,6 @@ func (*UserName) Tags(tag string, convert ...func(string) string) UserNameTags {
 	return UserNameTags{
 		First: conv(tagOfUserNameFirst.Get(tag)),
 		Last:  conv(tagOfUserNameLast.Get(tag)),
-		_tagsList: []string{
-			conv(tagOfUserNameFirst.Get(tag)),
-			conv(tagOfUserNameLast.Get(tag)),
-		},
 	}
 }
 

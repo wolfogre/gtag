@@ -16,11 +16,10 @@ var (
 
 // EmptyTags indicate tags of type Empty
 type EmptyTags struct {
-	_tagsList []string
 }
 
-func (t *EmptyTags) List() []string {
-	return t._tagsList
+func (t *EmptyTags) Values() []string {
+	return []string{}
 }
 
 // Tags return specified tags of Empty
@@ -32,9 +31,7 @@ func (*Empty) Tags(tag string, convert ...func(string) string) EmptyTags {
 	if conv == nil {
 		conv = func(in string) string { return in }
 	}
-	return EmptyTags{
-		_tagsList: []string{},
-	}
+	return EmptyTags{}
 }
 
 // TagsBson is alias of Tags("bson")
