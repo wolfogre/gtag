@@ -2,8 +2,9 @@
 
 <img src="./assets/gtag.png" width="130" alt="gtag logo">
 
-[![Build Status](https://travis-ci.com/wolfogre/gtag.svg?branch=master)](https://travis-ci.com/wolfogre/gtag)
-[![codecov](https://codecov.io/gh/wolfogre/gtag/branch/master/graph/badge.svg)](https://codecov.io/gh/wolfogre/gtag)
+[![Go Reference](https://pkg.go.dev/badge/github.com/wolfogre/gtag.svg)](https://pkg.go.dev/github.com/wolfogre/gtag)
+[![Actions](https://github.com/wolfogre/gtag/actions/workflows/test.yaml/badge.svg)](https://github.com/wolfogre/gtag/actions)
+[![Codecov](https://codecov.io/gh/wolfogre/gtag/branch/master/graph/badge.svg)](https://codecov.io/gh/wolfogre/gtag)
 [![Go Report Card](https://goreportcard.com/badge/github.com/wolfogre/gtag)](https://goreportcard.com/report/github.com/wolfogre/gtag)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/wolfogre/gtag)](https://github.com/wolfogre/gtag/blob/master/go.mod)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/wolfogre/gtag)](https://github.com/wolfogre/gtag/releases)
