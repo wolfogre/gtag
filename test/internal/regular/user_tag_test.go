@@ -278,3 +278,52 @@ func TestUser_TagsBson(t *testing.T) {
 		})
 	}
 }
+
+func TestUser_TagsSlice(t *testing.T) {
+	type fields struct {
+		Id    int
+		Name  UserName
+		Email string
+		age   int
+	}
+	type args struct {
+		tag     string
+		convert []func(string) string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   []string
+	}{
+		{
+			name: "regular",
+			fields: fields{
+				Id: 0,
+				Name: UserName{
+					First: "",
+					Last:  "",
+				},
+				Email: "",
+				age:   0,
+			},
+			args: args{
+				tag: "json",
+			},
+			want: []string{"id", "name", "email", ""},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			us := User{
+				Id:    tt.fields.Id,
+				Name:  tt.fields.Name,
+				Email: tt.fields.Email,
+				age:   tt.fields.age,
+			}
+			if got := us.Tags(tt.args.tag, tt.args.convert...); !reflect.DeepEqual(got.List(), tt.want) {
+				t.Errorf("Tags() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
